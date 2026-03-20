@@ -42,6 +42,7 @@ class SourceMessage(BaseModel):
     content: str | None = None
     doc_path: str | None = None
     file_info: dict | None = None
+    image_info: dict | None = None
     model_config = ConfigDict(extra="allow")
 
 
@@ -192,6 +193,10 @@ class TreeNodeTextualMemoryMetadata(TextualMemoryMetadata):
     background: str | None = Field(
         default="",
         description="background of this node",
+    )
+    reasoning_chain: dict | None = Field(
+        default=None,
+        description="reasoning chain: goal, decision, correction, preference, attention",
     )
 
     file_ids: list[str] | None = Field(
