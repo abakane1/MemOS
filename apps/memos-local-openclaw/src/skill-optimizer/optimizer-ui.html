@@ -1,0 +1,143 @@
+<!-- Optimizer View Content -->
+  <!-- Header -->
+  <div class="optimizer-header">
+    <div class="optimizer-title">
+      <h2>🎯 Skill Optimizer</h2>
+      <p class="optimizer-subtitle">智能检测相似技能，建议合并、升级或清理</p>
+    </div>
+    <div class="optimizer-actions">
+      <button class="btn btn-primary" onclick="startOptimizerScan()">
+        <span class="btn-icon">🔍</span> 开始扫描
+      </button>
+      <button class="btn btn-ghost" onclick="loadOptimizerStats()">
+        <span class="btn-icon">🔄</span> 刷新
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="optimizer-stats" id="optimizerStats">
+    <div class="optimizer-stat-card">
+      <div class="stat-icon">🔗</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statTotalPairs">-</div>
+        <div class="stat-label">相似对总数</div>
+      </div>
+    </div>
+    <div class="optimizer-stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statPending">-</div>
+        <div class="stat-label">待处理</div>
+      </div>
+    </div>
+    <div class="optimizer-stat-card success">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statExecuted">-</div>
+        <div class="stat-label">已优化</div>
+      </div>
+    </div>
+    <div class="optimizer-stat-card ignored">
+      <div class="stat-icon">🚫</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statIgnored">-</div>
+        <div class="stat-label">已忽略</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scan Progress (hidden by default) -->
+  <div class="scan-progress-card" id="scanProgressCard" style="display:none">
+    <div class="scan-progress-header">
+      <span class="scan-status">正在扫描...</span>
+      <span class="scan-percent" id="scanPercent">0%</span>
+    </div>
+    <div class="scan-progress-bar">
+      <div class="scan-progress-fill" id="scanProgressFill" style="width:0%"></div>
+    </div>
+    <div class="scan-progress-detail" id="scanProgressDetail"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="optimizer-tabs">
+    <button class="optimizer-tab active" data-tab="pending" onclick="switchOptimizerTab('pending')">
+      待处理建议
+      <span class="tab-badge" id="pendingBadge">0</span>
+    </button>
+    <button class="optimizer-tab" data-tab="cross-agent" onclick="switchOptimizerTab('cross-agent')">
+      跨 Agent 重复
+      <span class="tab-badge" id="crossAgentBadge">0</span>
+    </button>
+    <button class="optimizer-tab" data-tab="logs" onclick="switchOptimizerTab('logs')">
+      操作历史
+    </button>
+  </div>
+
+  <!-- Pending Tab Content -->
+  <div class="optimizer-tab-content active" id="pendingTab">
+    <div class="optimizer-filters">
+      <select id="decisionFilter" class="filter-select" onchange="filterPendingPairs()">
+        <option value="">所有建议</option>
+        <option value="MERGE">🔀 建议合并</option>
+        <option value="UPGRADE">⬆️ 建议升级</option>
+        <option value="DISCARD">🗑️ 建议删除</option>
+        <option value="KEEP_BOTH">✓ 建议保留</option>
+      </select>
+      <select id="scoreFilter" class="filter-select" onchange="filterPendingPairs()">
+        <option value="">所有相似度</option>
+        <option value="0.9">≥ 90% 高度相似</option>
+        <option value="0.8">≥ 80% 非常相似</option>
+        <option value="0.7">≥ 70% 相似</option>
+      </select>
+    </div>
+    <div class="optimizer-list" id="optimizerPendingList">
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p>暂无待处理的相似技能对</p>
+        <button class="btn btn-primary" onclick="startOptimizerScan()">开始扫描</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cross Agent Tab Content -->
+  <div class="optimizer-tab-content" id="crossAgentTab">
+    <div class="cross-agent-header">
+      <p class="cross-agent-desc">检测与其他 Agent 的重复技能，支持批量同步</p>
+      <button class="btn btn-primary" onclick="scanCrossAgent()">扫描跨 Agent</button>
+    </div>
+    <div class="cross-agent-stats" id="crossAgentStats"></div>
+    <div class="optimizer-list" id="crossAgentList">
+      <div class="empty-state">
+        <div class="empty-icon">🌐</div>
+        <p>暂无跨 Agent 重复数据</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logs Tab Content -->
+  <div class="optimizer-tab-content" id="logsTab">
+    <div class="optimizer-list" id="optimizerLogsList">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>暂无操作记录</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Detail Modal -->
+  <div class="optimizer-modal" id="comparisonModal" onclick="closeComparisonModal(event)">
+    <div class="optimizer-modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>技能对比详情</h3>
+        <button class="btn btn-icon" onclick="closeComparisonModal()">✕</button>
+      </div>
+      <div class="modal-body" id="comparisonModalBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="modal-footer" id="comparisonModalFooter">
+        <!-- Dynamic buttons -->
+      </div>
+    </div>
+  </div>
+</div>
